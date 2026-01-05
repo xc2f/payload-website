@@ -19,6 +19,8 @@ import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
 
+import { sendEmailTask } from './tasks/sendEmail'
+
 import { en } from '@payloadcms/translations/languages/en'
 import { zh } from '@payloadcms/translations/languages/zh'
 
@@ -100,7 +102,20 @@ export default buildConfig({
         return authHeader === `Bearer ${process.env.CRON_SECRET}`
       },
     },
-    tasks: [],
+    tasks: [sendEmailTask],
+    autoRun: [
+      {
+        cron: '* * * * *', // Run every minute
+        limit: 100,
+      },
+    ],
+    jobsCollectionOverrides: ({ defaultJobsCollection }) => {
+      if (!defaultJobsCollection.admin) {
+        defaultJobsCollection.admin = {}
+      }
+      defaultJobsCollection.admin.hidden = false
+      return defaultJobsCollection
+    },
   },
   email: nodemailerAdapter({
     defaultFromAddress: process.env.EMAIL_DEFAULT_FROM_NO_REPLY as string,

@@ -1,13 +1,12 @@
 // src/collections/Mails.ts
 import { CollectionConfig } from 'payload'
 import { authenticated } from '../../access/authenticated'
-import { SentMessageInfo } from 'nodemailer'
 
 export const Mails: CollectionConfig = {
   slug: 'mails',
   admin: {
     useAsTitle: 'subject',
-    defaultColumns: ['subject', 'to', 'status', 'createdAt'],
+    defaultColumns: ['subject', 'to', 'sendStatus', 'createdAt'],
   },
   access: {
     create: authenticated,
@@ -178,9 +177,23 @@ export const Mails: CollectionConfig = {
       ],
     },
 
-    /** Status */
+    /** Date */
     {
-      name: 'status',
+      name: 'at',
+      type: 'date',
+      admin: {
+        position: 'sidebar',
+        date: {
+          pickerAppearance: 'dayAndTime',
+          displayFormat: 'yyyy-MM-dd HH:mm:ss',
+          minDate: new Date(),
+        },
+      },
+    },
+
+    /** sendStatus */
+    {
+      name: 'sendStatus',
       type: 'select',
       defaultValue: 'pending',
       required: true,
@@ -205,48 +218,22 @@ export const Mails: CollectionConfig = {
     },
   ],
   hooks: {
-    beforeChange: [
-      async ({ data, originalDoc }) => {
-        if (data.status === 'pending') {
-          return data
-        }
-        // Only update status and result
-        return {
-          ...originalDoc,
-          status: data.status,
-          result: data.result,
-        }
-      },
-    ],
     afterChange: [
-      async ({ doc, req, collection }) => {
-        if (doc.status !== 'pending') {
+      async ({ doc, req }) => {
+        const { sendStatus, _status } = doc
+        if (sendStatus === 'sent' || _status === 'draft') {
           return doc
         }
-        const { payload } = req
-        try {
-          ;(await payload.sendEmail(doc)) as SentMessageInfo
-          await payload.update({
-            req,
-            collection: collection.slug,
-            id: doc.id,
-            data: {
-              status: 'sent',
-              result: 'ok',
-            },
-          })
-        } catch (err: any) {
-          await payload.update({
-            req,
-            collection: collection.slug,
-            id: doc.id,
-            data: {
-              status: 'failed',
-              result: err.message,
-            },
-          })
-        }
+        await req.payload.jobs.queue({
+          task: 'send-email',
+          req,
+          input: doc,
+          waitUntil: doc.at ? new Date(doc.at) : undefined,
+        })
       },
     ],
+  },
+  versions: {
+    drafts: true,
   },
 }

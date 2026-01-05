@@ -127,6 +127,7 @@ export interface Config {
   };
   jobs: {
     tasks: {
+      'send-email': TaskSendEmail;
       schedulePublish: TaskSchedulePublish;
       inline: {
         input: unknown;
@@ -857,10 +858,12 @@ export interface Mail {
         id?: string | null;
       }[]
     | null;
-  status: 'pending' | 'sent' | 'failed';
+  at?: string | null;
+  sendStatus: 'pending' | 'sent' | 'failed';
   result?: string | null;
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1005,7 +1008,7 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug: 'inline' | 'schedulePublish';
+        taskSlug: 'inline' | 'send-email' | 'schedulePublish';
         taskID: string;
         input?:
           | {
@@ -1038,7 +1041,7 @@ export interface PayloadJob {
         id?: string | null;
       }[]
     | null;
-  taskSlug?: ('inline' | 'schedulePublish') | null;
+  taskSlug?: ('inline' | 'send-email' | 'schedulePublish') | null;
   queue?: string | null;
   waitUntil?: string | null;
   processing?: boolean | null;
@@ -1481,10 +1484,12 @@ export interface MailsSelect<T extends boolean = true> {
         file?: T;
         id?: T;
       };
-  status?: T;
+  at?: T;
+  sendStatus?: T;
   result?: T;
   updatedAt?: T;
   createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1890,6 +1895,14 @@ export interface FooterSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskSend-email".
+ */
+export interface TaskSendEmail {
+  input?: unknown;
+  output?: unknown;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "TaskSchedulePublish".
  */
 export interface TaskSchedulePublish {
@@ -1904,10 +1917,6 @@ export interface TaskSchedulePublish {
       | ({
           relationTo: 'posts';
           value: number | Post;
-        } | null)
-      | ({
-          relationTo: 'feeds';
-          value: number | Feed;
         } | null);
     global?: string | null;
     user?: (number | null) | User;
