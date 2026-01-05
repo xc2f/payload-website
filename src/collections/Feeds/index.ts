@@ -60,7 +60,6 @@ export const Feeds: CollectionConfig = {
       },
     ],
   },
-
   endpoints: [
     {
       path: '/for/:slug',
@@ -80,6 +79,7 @@ export const Feeds: CollectionConfig = {
           where: {
             slug: { equals: slug },
             enabled: { equals: true },
+            _status: { equals: 'published' },
           },
           limit: 1,
         })
