@@ -1,4 +1,4 @@
-export default () => (
+const Divider = () => (
   <div
     style={{
       width: '100%',
@@ -8,3 +8,5 @@ export default () => (
     }}
   />
 )
+
+export default Divider
