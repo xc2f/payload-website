@@ -7,6 +7,7 @@ export const Mails: CollectionConfig = {
   admin: {
     useAsTitle: 'subject',
     defaultColumns: ['subject', 'to', 'sendStatus', 'createdAt'],
+    group: 'Tools',
   },
   access: {
     create: authenticated,

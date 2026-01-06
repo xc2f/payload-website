@@ -14,6 +14,7 @@ export const Feeds: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'title',
+    group: 'Tools',
   },
   fields: [
     {

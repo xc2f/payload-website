@@ -7,6 +7,7 @@ export const Notes: CollectionConfig = {
   slug: 'notes',
   admin: {
     useAsTitle: 'title',
+    group: 'Tools',
   },
   access: {
     create: authenticated,
