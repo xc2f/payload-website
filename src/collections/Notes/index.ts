@@ -37,6 +37,15 @@ export const Notes: CollectionConfig = {
             },
           ],
         },
+        {
+          slug: 'json',
+          fields: [
+            {
+              name: 'json',
+              type: 'json',
+            },
+          ],
+        },
         Code,
       ],
     },

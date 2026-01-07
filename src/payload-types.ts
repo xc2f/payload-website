@@ -777,6 +777,20 @@ export interface Note {
             blockName?: string | null;
             blockType: 'text';
           }
+        | {
+            json?:
+              | {
+                  [k: string]: unknown;
+                }
+              | unknown[]
+              | string
+              | number
+              | boolean
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'json';
+          }
         | CodeBlock
       )[]
     | null;
@@ -803,7 +817,7 @@ export interface Feed {
   id: number;
   title: string;
   /**
-   * 自动生成，格式为 https://xc2f.com/api/feeds/for/{slug}
+   * 自动生成，格式为 http://localhost:3000/api/feeds/for/{slug}
    */
   feedUrl?: string | null;
   enabled?: boolean | null;
@@ -1423,6 +1437,13 @@ export interface NotesSelect<T extends boolean = true> {
           | T
           | {
               text?: T;
+              id?: T;
+              blockName?: T;
+            };
+        json?:
+          | T
+          | {
+              json?: T;
               id?: T;
               blockName?: T;
             };
