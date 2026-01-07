@@ -74,8 +74,11 @@ jobs:
           cp -r .next/* .
 
           # 如果你还有 public / package.json / next.config.js
-          # cp -r public .
-          # cp package.json next.config.js .
+          cp -r public .
+          cp package.json next.config.js .
+
+          # copy .gitignore
+          cp .gitignore .
 
           git add .
           git commit -m "chore: build from $GITHUB_SHA"
