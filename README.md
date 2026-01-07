@@ -13,14 +13,12 @@
 
 ### build
 
-> 不在服务端build
-
 - 取消`docker-compose.yml`注释: `command: sh -c "npm install -g pnpm && pnpm install && pnpm build`
 
 ## Deploy
 
-1. 本地进入payload容器build后，将.next提交
-2. server端拉取代码
+1. 代码push后触发CI，.next push到build分支
+2. server端拉取main和build分支代码
 3. 取消`docker-compose.yml`注释: `command: sh -c "npm install -g pnpm && pnpm install && pnpm start"`
 4. 启动服务: `docker-compose up -d`
 5. 第一次启动或有新增表结构时，进入payload容器，`npm install -g pnpm`，然后执行`pnpm payload migrate:create`和`pnpm payload migrate`
