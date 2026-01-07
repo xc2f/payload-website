@@ -66,7 +66,10 @@ jobs:
           git config user.email "github-actions@github.com"
 
           # 拷贝 .next 但排除 cache
-          rsync -av --exclude='cache' .next/ /tmp/next-build/
+          # rsync -av --exclude='cache' .next/ /tmp/next-build/
+          rm -rf .next/cache
+          mkdir -p /tmp/next-build
+          cp -r .next/* /tmp/next-build/
 
           # 切换或创建 build 分支
           git checkout -B build
@@ -75,7 +78,10 @@ jobs:
           git rm -rf .
 
           # 把 build 产物拷进去（按需修改）
-          rsync -av /tmp/next-build/ .next/
+          # rsync -av /tmp/next-build/ .next/
+          rm -rf .next
+          mkdir -p .next
+          cp -r /tmp/next-build/* .next/
 
           git add .next
           git commit -m "chore: build from $GITHUB_SHA"
