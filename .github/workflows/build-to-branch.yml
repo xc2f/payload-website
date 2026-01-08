@@ -79,6 +79,9 @@ jobs:
           rm -rf .next/cache
           mkdir -p /tmp/next-build
           cp -r .next/* /tmp/next-build/
+          # copy public
+          mkdir -p /tmp/next-public
+          cp -r public/* /tmp/next-public/
 
           # 切换或创建 build 分支
           git checkout -B build
@@ -91,7 +94,11 @@ jobs:
           rm -rf .next
           mkdir -p .next
           cp -r /tmp/next-build/* .next/
+          rm -rf public
+          mkdir -p public
+          cp -r /tmp/next-public/* public/
 
           git add .next
+          git add public
           git commit -m "chore: build from $GITHUB_SHA"
           git push -f origin build
