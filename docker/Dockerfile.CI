@@ -3,19 +3,17 @@ FROM node:24-alpine
 WORKDIR /app
 ENV NODE_ENV=production
 
-# 1. 关键步骤：在镜像内部安装 sharp
-# Alpine 使用 musl libc，这会下载正确的 linuxmusl-arm64 二进制版本
-RUN npm install sharp
-
-# 2. 拷贝 Next.js standalone 产物
+# 1. 先拷贝 standalone 产物 (包含不兼容的 sharp)
 COPY .next/standalone ./
 COPY .next/static ./.next/static
 COPY public ./public
 
-# 3. 设置环境变量，明确告诉 Next.js 去哪里找 sharp
+# 2. 强制重新安装兼容 Alpine ARM 的 sharp
+# 这一步会直接在当前目录的 node_modules 中覆盖掉旧的 sharp
+RUN npm install sharp
+
+# 3. 告诉 Next.js 优先使用这个 sharp
 ENV NEXT_SHARP_PATH=/app/node_modules/sharp
 
 EXPOSE 3000
-
-# Next.js standalone 会生成 server.js
 CMD ["node", "server.js"]
