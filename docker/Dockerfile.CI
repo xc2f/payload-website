@@ -1,24 +1,11 @@
-FROM node:24-alpine
+FROM node:24-slim
 
 WORKDIR /app
 ENV NODE_ENV=production
 
-# 1. 独立安装 sharp 及其运行所需的依赖
-RUN mkdir -p /app/sharp-install && \
-    cd /app/sharp-install && \
-    npm install sharp --os=linux --libc=musl --cpu=arm64
-
-# 2. 拷贝 Next.js 产物
 COPY .next/standalone ./
 COPY .next/static ./.next/static
 COPY public ./public
-
-# 3. 将所有的 sharp 相关依赖合并到主 node_modules
-# cp -a 可以保持文件属性并合并目录
-RUN cp -a /app/sharp-install/node_modules/. ./node_modules/
-
-# 4. 环境变量
-ENV NEXT_SHARP_PATH=/app/node_modules/sharp
 
 EXPOSE 3000
 CMD ["node", "server.js"]
