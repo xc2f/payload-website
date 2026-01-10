@@ -3,18 +3,23 @@ FROM node:24-alpine
 WORKDIR /app
 ENV NODE_ENV=production
 
-# 1. 先拷贝产物
+# 1. 在一个干净的目录下只安装 sharp
+# 这样 npm 不会去扫描项目的 package.json，也就不会有依赖冲突
+RUN mkdir -p /app/sharp-install && \
+    cd /app/sharp-install && \
+    npm install sharp --os=linux --libc=musl --cpu=arm64
+
+# 2. 拷贝 Next.js 产物到 /app
 COPY .next/standalone ./
 COPY .next/static ./.next/static
 COPY public ./public
 
-# 2. 强制安装 sharp，忽略 peerDependency 冲突
-# --force 会绕过 ERESOLVE 错误
-RUN npm install sharp --force --no-package-lock
-# 或显式指定平台，避免 npm 去校验其它无关的 UI 组件依赖
-# RUN npm install --os=linux --libc=musl --cpu=arm64 sharp
+# 3. 将安装好的 sharp 移动到正确的位置
+# 或者直接设置路径指向它
+RUN mkdir -p node_modules && \
+    cp -r /app/sharp-install/node_modules/sharp ./node_modules/
 
-# 3. 设置环境变量指向正确的 sharp
+# 4. 强制 Next.js 使用这个特定的 sharp
 ENV NEXT_SHARP_PATH=/app/node_modules/sharp
 
 EXPOSE 3000
