@@ -1,0 +1,1 @@
+self.__NEXT_FONT_MANIFEST='{"pages":{},"app":{"/home/runner/work/www/www/src/app/(frontend)/layout":["static/media/66f30814ff6d7cdf.p.woff2","static/media/e11418ac562b8ac1-s.p.woff2","static/media/d02cf5a717155220-s.p.ttf"]},"appUsingSizeAdjust":true,"pagesUsingSizeAdjust":false}';

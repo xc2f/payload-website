@@ -1,0 +1,11 @@
+# *
+User-agent: *
+Disallow: /admin/*
+
+# Host
+Host: https://xc2f.com
+
+# Sitemaps
+Sitemap: https://xc2f.com/sitemap.xml
+Sitemap: https://xc2f.com/pages-sitemap.xml
+Sitemap: https://xc2f.com/posts-sitemap.xml
