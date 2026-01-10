@@ -6,7 +6,7 @@ PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$PROJECT_DIR"
 
 # 定义文件路径变量
-COMPOSE_FILE="docker/docker-compose.prod.yml"
+COMPOSE_FILE="docker-compose.prod.yml"
 
 echo "🚀 Starting deployment..."
 
