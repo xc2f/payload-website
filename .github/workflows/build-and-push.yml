@@ -32,7 +32,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     environment: production
     env:
       BUILD_OUTPUT: standalone
@@ -76,6 +76,12 @@ jobs:
       - name: Build Next (standalone)
         run: pnpm build
 
+      - name: Verify Build Artifacts
+        run: |
+          ls -la .next/standalone
+          ls -la .next/static
+          ls -la public
+
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -87,21 +93,17 @@ jobs:
         with:
           registry-type: public
 
-      # 设置 Docker Buildx
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      # 设置 QEMU 模拟多平台
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-
-      - name: Build & Push
+      - name: Build and Push Docker image (ARM64 only)
         run: |
+          # 1. 提取 Short SHA
           SHORT_SHA=${GITHUB_SHA:0:7}
-          docker buildx build \
-            --platform linux/amd64,linux/arm64 \
-            -f docker/Dockerfile.CI \
-            -t public.ecr.aws/umcai/xc2f/payload:latest \
-            -t public.ecr.aws/umcai/xc2f/payload:$SHORT_SHA \
-            --push \
-            .
+          REGISTRY=public.ecr.aws/umcai/xc2f/payload
+
+          # 2. 构建镜像
+          docker build -f docker/Dockerfile.CI \
+            -t $REGISTRY:latest \
+            -t $REGISTRY:${SHORT_SHA} .
+
+          # 3. 推送镜像
+          docker push $REGISTRY:latest
+          docker push $REGISTRY:${SHORT_SHA}
