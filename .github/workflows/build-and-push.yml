@@ -97,10 +97,11 @@ jobs:
 
       - name: Build & Push
         run: |
+          SHORT_SHA=${GITHUB_SHA:0:7}
           docker buildx build \
             --platform linux/amd64,linux/arm64 \
             -f docker/Dockerfile.CI \
             -t public.ecr.aws/umcai/xc2f/payload:latest \
-            -t public.ecr.aws/umcai/xc2f/payload:${{ github.sha.substr(0, 7) }} \
+            -t public.ecr.aws/umcai/xc2f/payload:$SHORT_SHA \
             --push \
             .
