@@ -18,7 +18,10 @@ services:
       - PNPM_STORE_DIR=/home/node/.pnpm-store
       - APP_CMD=${APP_CMD}
       # - NODE_OPTIONS="--max-old-space-size=4096"
-    command: sh -c "pnpm ${APP_CMD}"
+    # for dev
+    # command: sh -c "pnpm ${APP_CMD}"
+    # for product
+    command: sh -c "pnpm build && pnpm start"
     working_dir: /app
     depends_on:
       - postgres

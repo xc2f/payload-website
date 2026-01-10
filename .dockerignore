@@ -2,9 +2,10 @@
 node_modules
 .pnpm-store
 
-# next.js
-.next
-out
+# ignore everything in .next except standalone + static
+.next/*
+!.next/standalone
+!.next/static
 
 # payload
 uploads
