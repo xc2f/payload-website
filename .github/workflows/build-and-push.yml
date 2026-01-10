@@ -95,18 +95,12 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
-      - name: Build Docker image
+      - name: Build & Push
         run: |
           docker buildx build \
             --platform linux/amd64,linux/arm64 \
-            -f docker/Dockerfile.CI -t xc2f/payload .
-
-      - name: Tag Docker image (latest + sha)
-        run: |
-          docker tag xc2f/payload:latest public.ecr.aws/umcai/xc2f/payload:latest
-          docker tag xc2f/payload:latest public.ecr.aws/umcai/xc2f/payload:${{ github.sha }}
-
-      - name: Push Docker image
-        run: |
-          docker push public.ecr.aws/umcai/xc2f/payload:latest
-          docker push public.ecr.aws/umcai/xc2f/payload:${{ github.sha }}
+            -f docker/Dockerfile.CI \
+            -t public.ecr.aws/umcai/xc2f/payload:latest \
+            -t public.ecr.aws/umcai/xc2f/payload:${{ github.sha::7 }} \
+            --push \
+            .
