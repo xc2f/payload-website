@@ -3,23 +3,22 @@ FROM node:24-alpine
 WORKDIR /app
 ENV NODE_ENV=production
 
-# 1. 在一个干净的目录下只安装 sharp
-# 这样 npm 不会去扫描项目的 package.json，也就不会有依赖冲突
+# 1. 独立安装 sharp
 RUN mkdir -p /app/sharp-install && \
     cd /app/sharp-install && \
     npm install sharp --os=linux --libc=musl --cpu=arm64
 
-# 2. 拷贝 Next.js 产物到 /app
+# 2. 拷贝 Next.js 产物
 COPY .next/standalone ./
 COPY .next/static ./.next/static
 COPY public ./public
 
-# 3. 将安装好的 sharp 移动到正确的位置
-# 或者直接设置路径指向它
-RUN mkdir -p node_modules && \
+# 3. 确保目标目录干净，并拷贝 sharp
+RUN rm -rf ./node_modules/sharp && \
+    mkdir -p ./node_modules && \
     cp -r /app/sharp-install/node_modules/sharp ./node_modules/
 
-# 4. 强制 Next.js 使用这个特定的 sharp
+# 4. 指向 sharp 路径
 ENV NEXT_SHARP_PATH=/app/node_modules/sharp
 
 EXPOSE 3000
