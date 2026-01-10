@@ -3,14 +3,19 @@ FROM node:24-alpine
 WORKDIR /app
 ENV NODE_ENV=production
 
-# Next.js standalone 模式产物在 .next/standalone 下
-# 我们将其内容拷贝到镜像的工作目录
-COPY .next/standalone ./
+# 1. 关键步骤：在镜像内部安装 sharp
+# Alpine 使用 musl libc，这会下载正确的 linuxmusl-arm64 二进制版本
+RUN npm install sharp
 
-# 静态资源和公共文件在 .next/standalone 之外，需要手动拷入
-# 注意：目标路径必须是 ./.next/static 和 ./public
+# 2. 拷贝 Next.js standalone 产物
+COPY .next/standalone ./
 COPY .next/static ./.next/static
 COPY public ./public
 
+# 3. 设置环境变量，明确告诉 Next.js 去哪里找 sharp
+ENV NEXT_SHARP_PATH=/app/node_modules/sharp
+
 EXPOSE 3000
+
+# Next.js standalone 会生成 server.js
 CMD ["node", "server.js"]
