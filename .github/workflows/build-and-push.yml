@@ -87,6 +87,14 @@ jobs:
         with:
           registry-type: public
 
+      # 设置 Docker Buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # 设置 QEMU 模拟多平台
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
       - name: Build Docker image
         run: |
           docker buildx build \
