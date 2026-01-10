@@ -33,7 +33,7 @@ const nextConfig = {
   },
   reactStrictMode: true,
   redirects,
-  output: 'standalone',
+  output: process.env.BUILD_OUTPUT || undefined,
   typescript: {
     ignoreBuildErrors: true,
   },
