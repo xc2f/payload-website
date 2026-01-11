@@ -78,9 +78,7 @@ APP_CMD=start
 - 启动：`docker-compose up -d`
 - 进入payload容器：`docker-compose exec payload sh`
 
-### git
-
-### 暂存某个文件
+### git 暂存某个文件
 
 ```bash
 git stash push -- docker-compose.yml
