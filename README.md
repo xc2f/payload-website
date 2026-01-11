@@ -94,3 +94,33 @@ psql -U postgres
 ALTER USER postgres WITH PASSWORD 'postgres';
 # 注：密码postgres要用引号引起来; 命令最后有分号
 ```
+
+### DB migration
+
+```bash
+# 进入payload容器
+docker-compose exec payload sh
+
+# create migration
+pnpm payload migrate:create
+
+# exec migration
+pnpm payload migrate
+
+# 退出容器
+exec
+
+# 确认生成的迁移文件名
+docker exec -it payload ls /app/src/migrations
+
+# 拷贝到宿主机
+docker cp payload:/app/src/migrations/. ./migrations/
+
+# 合并提交
+cd ~/www-code
+cp -r ~/www/migrations/* ./src/migrations/
+git status
+git add -A
+git commit -m "create migrations"
+git push
+```
