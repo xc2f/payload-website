@@ -108,3 +108,5 @@ jobs:
           cache-to: type=gha,mode=max
           # 明确指定平台（因为你运行在 arm 环境，默认就是 arm）
           platforms: linux/arm64
+          provenance: false # 禁用来源证明（消除 0.01MB 的镜像）
+          sbom: false # 禁用软件账单
