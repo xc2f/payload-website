@@ -10,8 +10,4 @@ const mustEnv = (name: string): string => {
 
 export const sesClient = new SESv2Client({
   region: mustEnv('AWS_SERVICE_REGION'),
-  credentials: {
-    accessKeyId: mustEnv('AWS_ACCESS_KEY'),
-    secretAccessKey: mustEnv('AWS_ACCESS_SECRET'),
-  },
 })
