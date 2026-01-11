@@ -10,6 +10,7 @@ permissions:
 env:
   DATABASE_URL: postgres://payload:payload@localhost:5432/payload
   NEXT_PUBLIC_SERVER_URL: ${{ vars.NEXT_PUBLIC_SERVER_URL }}
+  NEXT_PUBLIC_SITE_NAME: ${{ vars.NEXT_PUBLIC_SITE_NAME }}
 
 jobs:
   build:

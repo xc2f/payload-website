@@ -138,11 +138,14 @@ export default buildConfig({
       return defaultJobsCollection
     },
   },
-  email: nodemailerAdapter({
-    defaultFromAddress: process.env.EMAIL_DEFAULT_FROM_NO_REPLY as string,
-    defaultFromName: process.env.EMAIL_DEFAULT_FROM_NAME as string,
-    transport: transporter,
-  }),
+  email:
+    process.env.ENABLE_EMAIL === 'true'
+      ? nodemailerAdapter({
+          defaultFromAddress: process.env.EMAIL_DEFAULT_FROM_NO_REPLY as string,
+          defaultFromName: process.env.EMAIL_DEFAULT_FROM_NAME as string,
+          transport: transporter,
+        })
+      : undefined,
   i18n: { supportedLanguages: { en, zh } },
   localization: {
     locales: [
