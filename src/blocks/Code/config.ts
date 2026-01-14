@@ -18,8 +18,28 @@ export const Code: Block = {
           value: 'javascript',
         },
         {
+          label: 'HTML',
+          value: 'html',
+        },
+        {
           label: 'CSS',
           value: 'css',
+        },
+        {
+          label: 'Json',
+          value: 'json',
+        },
+        {
+          label: 'Yaml',
+          value: 'yaml',
+        },
+        {
+          label: 'Bash',
+          value: 'bash',
+        },
+        {
+          label: 'Markdown',
+          value: 'markdown',
         },
       ],
     },
