@@ -34,8 +34,6 @@ You need to configure the following production environment variables for [GitHub
 
 The ARM image is built by default. To build an x86 (linux/amd64) image, search for `ubuntu-latest` and `linux/amd64` in the `.github/workflows/` files and uncomment the corresponding lines.
 
-## Deployment
-
 ### Docker Compose Deployment (Recommended)
 
 ```bash
