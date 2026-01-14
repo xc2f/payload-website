@@ -1,28 +1,42 @@
 # 📖
 
-## Develop
+## What's this
 
-```bash
-# .env
-APP_CMD=dev
-```
+A personal research project forked from the Payload CMS [website](https://github.com/payloadcms/website). Based on the official example, the following features have been added:
 
-### Start server
+- Email sending by SES
+- Subscription API
+- Notes recording
+- Scheduled database backups
+- File upload to R2/S3
+
+## Development
+
+### Start Server
 
 ```bash
 docker-compose up -d
 ```
 
-### initial account
+### Initial Admin Account
 
-- email: admin@local.host
-- password: 123456
+- Email: `admin@local.host`
+- Password: `123456`
 
----
+## Build
 
-## Deploy
+You need to configure the following production environment variables for [GitHub CI](https://github.com/xc2f/www/settings/environments)
 
-### Docker Compose 部署（推荐）
+- AWS_OIDC_ROLE
+- AWS_ECR_REGISTRY
+- NEXT_PUBLIC_SERVER_URL
+- NEXT_PUBLIC_SITE_NAME
+
+The ARM image is built by default. To build an x86 (linux/amd64) image, search for `ubuntu-latest` and `linux/amd64` in the `.github/workflows/` files and uncomment the corresponding lines.
+
+## Deployment
+
+### Docker Compose Deployment (Recommended)
 
 ```bash
 # Required files
@@ -32,97 +46,102 @@ postgres/**
 
 # Optional files
 scripts/**
-
-# postgres 修改 volume name
-docker run --rm -v FROM_NAME_pgdata:/from -v TO_NAME_pgdata:/to alpine sh -c "cd /from && cp -a . /to"
 ```
 
-#### product image
+#### 1. Production Image
 
-> 通常情况下，server 端应该使用此镜像
+> In most cases, the server should use this image
 
 ```bash
 public.ecr.aws/umcai/xc2f/payload:latest
 ```
 
-main 分支 push 后，GitHub CI build standalone 模式 image，推送到 ECR
+After pushing to the `main` branch, GitHub CI will build a standalone mode image and push it to ECR.
 
-#### production image with dev environment
+#### 2. Production Image with Dev Environment
 
 ```bash
 public.ecr.aws/umcai/xc2f/payload:dev-latest
 ```
 
-可运行 npn scripts 的镜像，如`pnpm payload migrate`，需在 CI 手动 dispatch `Build and Push Dev Image`
+This image supports running npm scripts, such as `pnpm payload migrate`.
+You need to dispatch `Build and Push Dev Image` manually in CI.
 
-### Docker + build 分支部署
+### Deploy with Docker + Build Branch
 
 ```bash
 # .env
 APP_CMD=start
 ```
 
-1. 在 CI 手动 dispatch `Build and Push to Build Branch`
-2. server 需要拉取项目的代码，无需下载依赖
-3. 构建 local image: `docker-compose build`
-4. server端部署：`pnpm run deploy:build`
+1. Manually dispatch `Build and Push to Build Branch` in CI.
+2. The server needs to pull the latest project code (dependencies not required).
+3. Build a local image: `docker-compose build`
+4. On the server side, deploy with: `pnpm run deploy:build`
 
-### build 分支部署
+### Build Branch Deployment
 
-1. 在 CI 手动 dispatch `Build and Push to Build Branch`
-2. server 需要拉取项目的代码并下载依赖
-3. server端部署：`pnpm run deploy:build`
+1. Manually dispatch `Build and Push to Build Branch` in CI.
+2. The server needs to pull the latest code and install dependencies.
+3. On the server side, deploy with: `pnpm run deploy:build`
 
-## Troubleshoots
+## Troubleshooting
 
-- 第一次启动或有新增表结构时，进入payload容器，执行`pnpm payload migrate:create` 和 `pnpm payload migrate`
+- On first startup or after new table structures are added, enter the payload container to run `pnpm payload migrate:create` and `pnpm payload migrate`.
+- On first startup, you may encounter an error indicating that `xc2f_pgdata` was not found. You can resolve this by commenting out the `volumes.pgdata.external` and `volumes.pgdata.name` lines in `docker-compose.yml`. If you keep these options, you can customize the pgdata name. See [Change Postgres volume name](#change-postgres-volume-name) for details.
 
-## Command
+## Commands
 
 ### docker-compose
 
 - build: `docker-compose build`
-- 终止：`docker-compose down`
-- 启动：`docker-compose up -d`
-- 进入payload容器：`docker-compose exec payload sh`
+- stop: `docker-compose down`
+- start: `docker-compose up -d`
+- enter payload container: `docker-compose exec payload sh`
 
-### git 暂存某个文件
+### Stash A File with Git
 
 ```bash
 git stash push -- docker-compose.yml
 ```
 
-### postgres 修改密码
+### Change Postgres volume name
+
+```bash
+docker run --rm -v ${FROM_NAME_pgdata}:/from -v ${TO_NAME_pgdata}:/to alpine sh -c "cd /from && cp -a . /to"
+```
+
+### Change Postgres Password
 
 ```bash
 docker-compose exec postgres sh
 psql -U postgres
 ALTER USER postgres WITH PASSWORD 'postgres';
-# 注：密码postgres要用引号引起来; 命令最后有分号
+# Note: Put the new password in single quotes; end command with semicolon
 ```
 
-### DB migration
+### Database Migration
 
 ```bash
-# 进入payload容器
+# Enter payload container
 docker-compose exec payload sh
 
-# create migration
+# Create migration
 pnpm payload migrate:create
 
-# exec migration
+# Apply migration
 pnpm payload migrate
 
-# 退出容器
-exec
+# Exit container
+exit
 
-# 确认生成的迁移文件名
+# Confirm migration filename
 docker exec -it payload ls /app/src/migrations
 
-# 拷贝到宿主机
+# Copy to host machine
 docker cp payload:/app/src/migrations/. ./migrations/
 
-# 合并提交
+# Merge and commit
 cd ~/www-code
 cp -r ~/www/migrations/* ./src/migrations/
 git status
