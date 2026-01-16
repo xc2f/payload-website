@@ -23,6 +23,9 @@ RUN apt-get update && \
 ENV PNPM_HOME="/home/node/.pnpm-store"
 ENV PATH="$PNPM_HOME:$PATH"
 
+# 创建 pnpm store 并赋权
+RUN mkdir -p /home/node/.pnpm-store && chown -R node:node /home/node/.pnpm-store
+
 # 安装 pnpm
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
