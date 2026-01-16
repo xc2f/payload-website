@@ -19,6 +19,8 @@ import { LogoFont } from '../fonts'
 import { Locale } from '@/i18n/types'
 import { setRequestLocale } from 'next-intl/server'
 
+export const dynamic = 'force-dynamic'
+
 export default async function LocaleLayout({
   children,
   params,
