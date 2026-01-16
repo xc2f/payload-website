@@ -8,12 +8,25 @@ import { Search } from '@/search/Component'
 import PageClient from './page.client'
 import { CardPostData } from '@/components/Card'
 
+import { Locale } from '@/i18n/types'
+import { setRequestLocale } from 'next-intl/server'
+
 type Args = {
   searchParams: Promise<{
     q: string
   }>
+  params: {
+    locale: Locale
+  }
 }
-export default async function Page({ searchParams: searchParamsPromise }: Args) {
+
+export default async function Page({
+  searchParams: searchParamsPromise,
+  params: { locale },
+}: Args) {
+  // Enable static rendering
+  setRequestLocale(locale)
+
   const { q: query } = await searchParamsPromise
   const payload = await getPayload({ config: configPromise })
 
@@ -65,7 +78,6 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
       <div className="container mb-16">
         <div className="prose dark:prose-invert max-w-none text-center">
           <h1 className="mb-8 lg:mb-16">Search</h1>
-
           <div className="max-w-[50rem] mx-auto">
             <Search />
           </div>

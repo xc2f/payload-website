@@ -9,17 +9,25 @@ import React from 'react'
 import PageClient from './page.client'
 import { notFound } from 'next/navigation'
 
+import { Locale } from '@/i18n/types'
+import { routing } from '@/i18n/routing'
+import { setRequestLocale } from 'next-intl/server'
+
 export const revalidate = 600
 
 type Args = {
   params: Promise<{
     pageNumber: string
+    locale: Locale
   }>
 }
 
 export default async function Page({ params: paramsPromise }: Args) {
-  const { pageNumber } = await paramsPromise
+  const { pageNumber, locale } = await paramsPromise
   const payload = await getPayload({ config: configPromise })
+
+  // Enable static rendering
+  setRequestLocale(locale)
 
   const sanitizedPageNumber = Number(pageNumber)
 
@@ -63,7 +71,8 @@ export default async function Page({ params: paramsPromise }: Args) {
 }
 
 export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
-  const { pageNumber } = await paramsPromise
+  const { pageNumber, locale } = await paramsPromise
+  setRequestLocale(locale)
   return {
     title: `Posts Page ${pageNumber || ''}`,
   }
@@ -78,11 +87,14 @@ export async function generateStaticParams() {
 
   const totalPages = Math.ceil(totalDocs / 10)
 
-  const pages: { pageNumber: string }[] = []
-
-  for (let i = 1; i <= totalPages; i++) {
-    pages.push({ pageNumber: String(i) })
-  }
-
-  return pages
+  return routing.locales.flatMap((locale) => {
+    const pages = []
+    for (let i = 1; i <= totalPages; i++) {
+      pages.push({
+        locale,
+        pageNumber: String(i),
+      })
+    }
+    return pages
+  })
 }

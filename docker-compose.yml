@@ -17,8 +17,6 @@ services:
       - pnpm_store:/home/node/.pnpm-store
       - ~/.aws:/home/node/.aws
         # - ~/.npmrc:/home/node/.npmrc:ro'
-    environment:
-      - APP_CMD=${APP_CMD:-dev} # 默认为 dev
     env_file:
       - .env
     depends_on:

@@ -12,6 +12,10 @@ import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 
+import { Locale } from '@/i18n/types'
+import { routing } from '@/i18n/routing'
+import { setRequestLocale } from 'next-intl/server'
+
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
   const pages = await payload.find({
@@ -25,9 +29,12 @@ export async function generateStaticParams() {
     },
   })
 
-  const params = pages.docs.map(({ slug }) => {
-    return { slug }
-  })
+  const params = []
+  for (const locale of routing.locales) {
+    for (const { slug } of pages.docs) {
+      params.push({ slug, locale })
+    }
+  }
 
   return params
 }
@@ -35,12 +42,17 @@ export async function generateStaticParams() {
 type Args = {
   params: Promise<{
     slug?: string
+    locale: Locale
   }>
 }
 
 export default async function Page({ params: paramsPromise }: Args) {
   const { isEnabled: draft } = await draftMode()
-  const { slug = 'home' } = await paramsPromise
+  const { slug = 'home', locale } = await paramsPromise
+
+  // Enable static rendering
+  setRequestLocale(locale)
+
   // Decode to support slugs with special characters
   const decodedSlug = decodeURIComponent(slug)
   const url = '/' + decodedSlug
@@ -71,7 +83,8 @@ export default async function Page({ params: paramsPromise }: Args) {
 }
 
 export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
-  const { slug = 'home' } = await paramsPromise
+  const { slug = 'home', locale } = await paramsPromise
+  setRequestLocale(locale)
   // Decode to support slugs with special characters
   const decodedSlug = decodeURIComponent(slug)
   const page = await queryPageBySlug({
