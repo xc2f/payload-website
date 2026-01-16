@@ -16,15 +16,21 @@ import { draftMode } from 'next/headers'
 import { getServerSideURL } from '@/utilities/getURL'
 import { LogoFont } from '../fonts'
 
-export default async function RootLayout({
+import { Locale } from '@/i18n/types'
+import { setRequestLocale } from 'next-intl/server'
+
+export default async function LocaleLayout({
   children,
   params,
 }: {
   children: React.ReactNode
-  params: Promise<{ locale: string }>
+  params: Promise<{ locale: Locale }>
 }) {
   const { isEnabled } = await draftMode()
   const { locale } = await params
+
+  // Enable static rendering
+  setRequestLocale(locale)
 
   return (
     <html

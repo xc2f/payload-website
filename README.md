@@ -87,6 +87,7 @@ APP_CMD=start
 
 - On first startup, you may encounter an error indicating that `external volume "xc2f_pgdata" not found`. You can resolve this by commenting out the `volumes.pgdata.external` and `volumes.pgdata.name` lines in `docker-compose.yml`. Or you can create the xc2f_pgdata volume by running `docker volume create xc2f_pgdata`.
 - On first startup or after new table structures are added, enter the payload container to run `pnpm payload migrate:create` and `pnpm payload migrate`.
+- If the API returns a 404, check if the URL is being processed by locale middleware. Exclude the API prefix in `src/middleware.ts`.
 
 ## Commands
 
