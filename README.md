@@ -10,7 +10,7 @@ A personal research project forked from the Payload CMS [website](https://github
 - Scheduled database backups
 - File upload to R2/S3
 
-## Development
+## Develop
 
 ### Start Server
 
@@ -25,7 +25,7 @@ docker-compose up -d
 
 ## Build
 
-You need to configure the following production environment variables for [GitHub CI](https://github.com/xc2f/www/settings/environments)
+Docker images are built using GitHub Actions. You need to configure the following environment variables in your [GitHub Environment Settings](https://github.com/xc2f/www/settings/environments).
 
 - AWS_OIDC_ROLE
 - AWS_ECR_REGISTRY
@@ -34,7 +34,9 @@ You need to configure the following production environment variables for [GitHub
 
 The ARM image is built by default. To build an x86 (linux/amd64) image, search for `ubuntu-latest` and `linux/amd64` in the `.github/workflows/` files and uncomment the corresponding lines.
 
-### Docker Compose Deployment (Recommended)
+## Deploy
+
+### Deploy with Docker Compose (Recommended)
 
 ```bash
 # Required files
@@ -77,7 +79,7 @@ APP_CMD=start
 3. Build a local image: `docker-compose build`
 4. On the server side, deploy with: `pnpm run deploy:build`
 
-### Build Branch Deployment
+### Deploy with Build Branch
 
 1. Manually dispatch `Build and Push to Build Branch` in CI.
 2. The server needs to pull the latest code and install dependencies.
