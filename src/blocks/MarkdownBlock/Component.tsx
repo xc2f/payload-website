@@ -14,6 +14,9 @@ import rehypeKatex from 'rehype-katex'
 import remarkMath from 'remark-math'
 import 'katex/dist/katex.min.css'
 
+// html
+import rehypeRaw from 'rehype-raw'
+
 import { Code as CodeHighlighter } from '../Code/Component.client'
 
 type Props = {
@@ -21,11 +24,11 @@ type Props = {
 } & MarkdownBlockProps
 
 export const MarkdownBlock: React.FC<Props> = ({ className, content }) => {
-  const withClassName = cn(className)
+  const withClassName = cn(className, 'prose prose-neutral dark:prose-invert')
   const markdownContent = (
     <Markdown
       remarkPlugins={[remarkGfm, remarkMath]}
-      rehypePlugins={[rehypeKatex]}
+      rehypePlugins={[rehypeKatex, rehypeRaw]}
       components={{
         // 1. 拦截 pre 标签
         pre(props) {
@@ -37,7 +40,7 @@ export const MarkdownBlock: React.FC<Props> = ({ className, content }) => {
           const { children, className, ...rest } = props
           const match = /language-(\w+)/.exec(className || '')
           if (match) {
-            const content = String(children).replace(/\n$/, '')
+            const content = String(children).trim()
             return <CodeHighlighter code={content} language={match[1]} />
           }
           return (

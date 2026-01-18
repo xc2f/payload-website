@@ -1,5 +1,6 @@
 import tailwindcssAnimate from 'tailwindcss-animate'
 import typography from '@tailwindcss/typography'
+import mdClassList from './src/blocks/MarkdownBlock/classList'
 
 /** @type {import('tailwindcss').Config} */
 const config = {
@@ -13,6 +14,7 @@ const config = {
   plugins: [tailwindcssAnimate, typography],
   prefix: '',
   safelist: [
+    ...mdClassList,
     'lg:col-span-4',
     'lg:col-span-6',
     'lg:col-span-8',
