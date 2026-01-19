@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 
-import { ComposedChart, XAxis, YAxis, CartesianGrid, Area, Bar, Line } from 'recharts'
+import { LineChart, XAxis, YAxis, CartesianGrid, Line } from 'recharts'
 import {
   ChartContainer,
   ChartLegend,
@@ -14,13 +14,13 @@ import {
 type SeriesItem = {
   key: string
   label: string
-  type: 'line' | 'bar' | 'area'
+  type: 'line'
   color?: string | undefined
 }
 
 type SeriesConfigMap = Record<string, Partial<SeriesItem>>
 
-export type ComposedChartProps = {
+export type LineChartProps = {
   xAxisKey: string
   series: SeriesItem[]
   config?: SeriesConfigMap
@@ -33,7 +33,7 @@ type LegendItem = {
   color?: string
 }
 
-const Chart: React.FC<ComposedChartProps> = (props) => {
+const Chart: React.FC<LineChartProps> = (props) => {
   const { dataset = [], xAxisKey, series = [], config = {} } = props
   const [hiddenKeys, setHiddenKeys] = useState<Set<string>>(new Set())
 
@@ -68,70 +68,29 @@ const Chart: React.FC<ComposedChartProps> = (props) => {
   }
 
   const renderSeries = (item: SeriesItem, idx: number) => {
-    const { type, key, label } = item
+    const { key, label } = item
     const color = chartConfig[key]?.color || `var(--chart-${(idx % 10) + 1})`
     const hidden = hiddenKeys.has(key)
 
-    switch (type) {
-      case 'line':
-        return (
-          <Line
-            key={key}
-            dataKey={key}
-            label={label}
-            fill={color}
-            stroke={color}
-            type="monotone"
-            dot={false}
-            strokeWidth={2}
-            connectNulls={true}
-            hide={hidden}
-          />
-        )
-      case 'bar':
-        return (
-          <Bar
-            key={key}
-            dataKey={key}
-            label={label}
-            fill={color}
-            stroke={color}
-            radius={4}
-            hide={hidden}
-          />
-        )
-      case 'area': {
-        const id = `colorLatency_${key}`
-        return [
-          <defs key={id}>
-            <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="35%" stopColor={color} stopOpacity={1} />
-              <stop offset="100%" stopColor={color} stopOpacity={0} />
-            </linearGradient>
-          </defs>,
-          <Area
-            key={key}
-            dataKey={key}
-            label={label}
-            fill={`url(#${id})`}
-            stroke={color}
-            strokeWidth={0}
-            type="monotone"
-            hide={hidden}
-          />,
-        ]
-      }
-
-      default:
-        break
-    }
-
-    return null
+    return (
+      <Line
+        key={key}
+        dataKey={key}
+        label={label}
+        fill={color}
+        stroke={color}
+        type="monotone"
+        dot={false}
+        strokeWidth={2}
+        connectNulls={true}
+        hide={hidden}
+      />
+    )
   }
 
   return (
     <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-      <ComposedChart data={dataset}>
+      <LineChart data={dataset}>
         <CartesianGrid vertical={false} stroke="#f5f5f5" />
         <XAxis dataKey={xAxisKey} minTickGap={50} tickLine={false} axisLine={false} />
         <YAxis axisLine={false} tickLine={false} />
@@ -141,7 +100,7 @@ const Chart: React.FC<ComposedChartProps> = (props) => {
           className="cursor-pointer"
         />
         {series.map((item, idx) => renderSeries(item, idx))}
-      </ComposedChart>
+      </LineChart>
     </ChartContainer>
   )
 }

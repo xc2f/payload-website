@@ -2,6 +2,11 @@
 
 import React from 'react'
 import ComposedChart, { ComposedChartProps } from './ComposedChart'
+import LineChart, { LineChartProps } from './LineChart'
+import BarChart, { BarChartProps } from './BarChart'
+import AreaChart, { AreaChartProps } from './AreaChart'
+import ScatterChart, { ScatterChartProps } from './ScatterChart'
+import PieChart, { PieChartProps } from './PieChart'
 import { ChartHeader } from './ChartHeader'
 
 interface BaseChartProps {
@@ -11,7 +16,11 @@ interface BaseChartProps {
 
 export type ChartProps =
   | ({ type: 'composed' } & ComposedChartProps)
-  | { type: 'line' | 'bar' | 'area' | 'pie' }
+  | ({ type: 'line' } & LineChartProps)
+  | ({ type: 'bar' } & BarChartProps)
+  | ({ type: 'area' } & AreaChartProps)
+  | ({ type: 'scatter' } & ScatterChartProps)
+  | ({ type: 'pie' } & PieChartProps)
 
 export const Chart: React.FC<BaseChartProps & ChartProps> = ({
   type,
@@ -23,6 +32,21 @@ export const Chart: React.FC<BaseChartProps & ChartProps> = ({
   switch (type) {
     case 'composed':
       chart = <ComposedChart {...(rest as ComposedChartProps)} />
+      break
+    case 'line':
+      chart = <LineChart {...(rest as LineChartProps)} />
+      break
+    case 'bar':
+      chart = <BarChart {...(rest as BarChartProps)} />
+      break
+    case 'area':
+      chart = <AreaChart {...(rest as AreaChartProps)} />
+      break
+    case 'scatter':
+      chart = <ScatterChart {...(rest as ScatterChartProps)} />
+      break
+    case 'pie':
+      chart = <PieChart {...(rest as PieChartProps)} />
       break
     default:
       break

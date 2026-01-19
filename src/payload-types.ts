@@ -2070,7 +2070,7 @@ export interface BannerBlock {
 export interface ChartBlock {
   heading?: string | null;
   description?: string | null;
-  type: 'line' | 'bar' | 'area' | 'pie' | 'composed';
+  type: 'line' | 'bar' | 'area' | 'pie' | 'scatter' | 'composed';
   /**
    * 数组对象格式，例如: [{ "time": "1:51", "Seoul": 97, "Tokyo": 86 }]
    */
@@ -2083,12 +2083,12 @@ export interface ChartBlock {
     | number
     | boolean
     | null;
-  xAxisKey: string;
+  xAxisKey?: string | null;
   series?:
     | {
         key: string;
         label?: string | null;
-        type?: ('line' | 'bar' | 'area') | null;
+        type?: ('line' | 'bar' | 'area' | 'scatter') | null;
         yAxis?: ('left' | 'right') | null;
         /**
          * 可填十六进制或 color 名称
@@ -2097,6 +2097,10 @@ export interface ChartBlock {
         id?: string | null;
       }[]
     | null;
+  pieConfig?: {
+    nameKey: string;
+    valueKey: string;
+  };
   /**
    * 透传给图表库的原生配置项
    */

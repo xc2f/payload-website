@@ -1,15 +1,15 @@
 services:
   payload:
-    image: public.ecr.aws/umcai/xc2f/payload:latest
+    image:
+      public.ecr.aws/umcai/xc2f/payload:latest
+      # public.ecr.aws/umcai/xc2f/payload:dev-latest
     container_name: payload
     restart: unless-stopped
     ports:
-      - '3000:3000'
-    volumes:
-      # 将当前目录映射到容器的 /app
-      - .:/app
-      # 排除 node_modules，防止跨平台编译冲突
-      - /app/node_modules
+      - '127.0.0.1:3000:3000'
+    # volumes:
+    #   - .:/app
+    #   - /app/node_modules
     depends_on:
       - postgres
     env_file:

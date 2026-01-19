@@ -1,4 +1,6 @@
 import type { Block } from 'payload'
+import { CommonConfig } from './common.config'
+import { PieConfig } from './pie.config'
 
 export const ChartBlock: Block = {
   slug: 'chart',
@@ -31,6 +33,7 @@ export const ChartBlock: Block = {
         { label: 'Bar', value: 'bar' },
         { label: 'Area', value: 'area' },
         { label: 'Pie', value: 'pie' },
+        { label: 'Scatter', value: 'scatter' },
         { label: 'Composed', value: 'composed' },
       ],
       defaultValue: 'line',
@@ -61,58 +64,8 @@ export const ChartBlock: Block = {
       ],
     },
 
-    {
-      name: 'xAxisKey',
-      type: 'text',
-      label: 'X轴字段名',
-      required: true,
-    },
-    {
-      name: 'series',
-      label: 'Series 配置',
-      type: 'array',
-      minRows: 1,
-      fields: [
-        {
-          name: 'key',
-          type: 'text',
-          label: '字段名',
-          required: true,
-        },
-        {
-          name: 'label',
-          type: 'text',
-          label: '显示名称',
-        },
-        {
-          name: 'type',
-          type: 'select',
-          label: 'Series 类型',
-          options: [
-            { label: 'Line', value: 'line' },
-            { label: 'Bar', value: 'bar' },
-            { label: 'Area', value: 'area' },
-          ],
-          defaultValue: 'line',
-        },
-        {
-          name: 'yAxis',
-          type: 'select',
-          label: 'Y轴位置',
-          options: [
-            { label: 'Left', value: 'left' },
-            { label: 'Right', value: 'right' },
-          ],
-          defaultValue: 'left',
-        },
-        {
-          name: 'color',
-          type: 'text',
-          label: '颜色',
-          admin: { description: '可填十六进制或 color 名称' },
-        },
-      ],
-    },
+    ...CommonConfig,
+    ...PieConfig,
 
     // 高级 Chart 配置
     {
