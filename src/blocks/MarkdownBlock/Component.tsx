@@ -28,9 +28,10 @@ type Props = {
 
 export const MarkdownBlock: React.FC<Props> = ({ className, content }) => {
   const withClassName = cn(className, 'markdown')
-  const markdownContent = (
+  const markdownContent = convertLexicalToPlaintext({ data: content })
+  const markdownElement = (
     <Markdown
-      remarkPlugins={[remarkGfm, remarkMath]}
+      remarkPlugins={[remarkMath, remarkGfm]}
       rehypePlugins={[rehypeKatex, rehypeRaw]}
       components={{
         // 拦截 pre 标签
@@ -69,9 +70,9 @@ export const MarkdownBlock: React.FC<Props> = ({ className, content }) => {
         },
       }}
     >
-      {convertLexicalToPlaintext({ data: content })}
+      {markdownContent}
     </Markdown>
   )
 
-  return <div className={withClassName}>{markdownContent}</div>
+  return <div className={withClassName}>{markdownElement}</div>
 }

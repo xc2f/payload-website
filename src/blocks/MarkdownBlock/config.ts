@@ -14,6 +14,9 @@ export const MarkdownBlock: Block = {
       }),
       label: false,
       required: true,
+      admin: {
+        description: `行内换行：Shift + Enter\n语法速查：https://markdownlivepreview.dev`,
+      },
     },
   ],
 }

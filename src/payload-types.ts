@@ -2019,6 +2019,10 @@ export interface TaskSchedulePublish {
  * via the `definition` "MarkdownBlock".
  */
 export interface MarkdownBlock {
+  /**
+   * 行内换行：Shift + Enter
+   * 语法速查：https://markdownlivepreview.dev
+   */
   content: {
     root: {
       type: string;
