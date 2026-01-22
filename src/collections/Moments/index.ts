@@ -20,14 +20,16 @@ export const Moments: CollectionConfig = {
     livePreview: {
       url: ({ data, req }) =>
         generatePreviewPath({
-          slug: data?.slug,
+          // slug: data?.slug,
+          slug: '',
           collection: 'moments',
           req,
         }),
     },
     preview: (data, { req }) =>
       generatePreviewPath({
-        slug: data?.slug as string,
+        // slug: data?.slug as string,
+        slug: '',
         collection: 'moments',
         req,
       }),
