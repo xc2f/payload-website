@@ -1,5 +1,17 @@
 {
   "PostPage": {
     "join_the_discussion_on_github": "Join the discussion on GitHub"
+  },
+  "Moments": {
+    "mood": {
+      "happy": "happy",
+      "calm": "calm",
+      "thoughtful": "thoughtful",
+      "tired": "tired",
+      "sad": "sad",
+      "energized": "energized",
+      "content": "content",
+      "neutral": "neutral"
+    }
   }
 }

@@ -1,5 +1,4 @@
 'use client'
-import { RenderImageContext, RenderImageProps, RowsPhotoAlbum } from 'react-photo-album'
 import {
   Lightbox,
   isImageFitCover,
@@ -8,13 +7,18 @@ import {
   useLightboxState,
   RenderSlideProps,
   SlideImage,
+  SlideVideo,
 } from 'yet-another-react-lightbox'
+import { Video, Thumbnails, Counter, Captions } from 'yet-another-react-lightbox/plugins'
 import 'yet-another-react-lightbox/styles.css'
+import 'yet-another-react-lightbox/plugins/thumbnails.css'
+import 'yet-another-react-lightbox/plugins/counter.css'
+import 'yet-another-react-lightbox/plugins/captions.css'
 
 import { Media } from '@/components/Media'
 
-interface Slide extends SlideImage {
-  key: string
+type CustomSlide = (SlideImage | SlideVideo) & {
+  key?: string
   src: string
   width?: number
   height?: number
@@ -22,19 +26,19 @@ interface Slide extends SlideImage {
 }
 
 interface ImageLightboxProps {
-  slides: Slide[]
+  slides: CustomSlide[]
   index: number
   open: boolean
   close: () => void
 }
 
 function isNextJsImage(
-  slide: SlideImage,
-): slide is Required<Pick<SlideImage, 'width' | 'height'>> & SlideImage {
+  slide: CustomSlide,
+): slide is Required<Pick<CustomSlide, 'width' | 'height'>> & CustomSlide {
   return isImageSlide(slide) && typeof slide.width === 'number' && typeof slide.height === 'number'
 }
 
-function NextJsImage({ slide, offset, rect }: RenderSlideProps<SlideImage>) {
+function NextJsImage({ slide, offset, rect }: RenderSlideProps<CustomSlide>) {
   const {
     on: { click },
     carousel: { imageFit },
@@ -67,10 +71,19 @@ export default function ImageLightbox({ slides, index, open, close }: ImageLight
   return (
     <Lightbox
       index={index}
+      plugins={[Video, Thumbnails, Counter, Captions]}
       slides={slides}
       open={open}
       close={close}
       render={{ slide: NextJsImage }}
+      controller={{
+        closeOnBackdropClick: true,
+      }}
+      thumbnails={{
+        border: 2,
+        borderRadius: 2,
+        padding: 0,
+      }}
     />
   )
 }

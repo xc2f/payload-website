@@ -1,6 +1,7 @@
 import tailwindcssAnimate from 'tailwindcss-animate'
 import typography from '@tailwindcss/typography'
 import mdClassList from './src/blocks/MarkdownBlock/classList'
+import { BREAKPOINTS } from './src/cssVariables'
 
 /** @type {import('tailwindcss').Config} */
 const config = {
@@ -39,13 +40,11 @@ const config = {
         sm: '1rem',
         xl: '2rem',
       },
-      screens: {
-        '2xl': '86rem',
-        lg: '64rem',
-        md: '48rem',
-        sm: '40rem',
-        xl: '80rem',
-      },
+      screens: Object.fromEntries(
+        Object.entries(BREAKPOINTS)
+          .filter((i) => i[0] !== '3xl')
+          .map(([k, v]) => [k, `${v / 16}rem`]),
+      ),
     },
     extend: {
       animation: {

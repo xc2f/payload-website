@@ -1,5 +1,17 @@
 {
   "PostPage": {
     "join_the_discussion_on_github": "在 GitHub 参与讨论"
+  },
+  "Moments": {
+    "mood": {
+      "happy": "开心",
+      "calm": "平静",
+      "thoughtful": "思考",
+      "tired": "疲惫",
+      "sad": "低落",
+      "energized": "充实",
+      "content": "满足",
+      "neutral": "无感"
+    }
   }
 }

@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import MomentCard from './MomentCard'
 
 interface MomentsFeedProps {
@@ -13,8 +14,11 @@ export default function MomentsFeed({ moments }: MomentsFeedProps) {
 
   return (
     <div className="space-y-12">
-      {moments.map((moment) => (
-        <MomentCard key={moment.id} moment={moment} />
+      {moments.map((moment, index) => (
+        <React.Fragment key={moment.id}>
+          {index > 0 && <div className="h-px w-full bg-gray-200 dark:bg-gray-700" />}
+          <MomentCard moment={moment} />
+        </React.Fragment>
       ))}
     </div>
   )

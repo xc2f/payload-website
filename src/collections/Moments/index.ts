@@ -13,6 +13,7 @@ export const Moments: CollectionConfig = {
     read: anyone,
     update: authenticated,
   },
+  defaultSort: '-publishedAt',
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'date', 'published'],

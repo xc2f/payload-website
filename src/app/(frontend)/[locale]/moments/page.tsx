@@ -25,7 +25,7 @@ export default async function Page({ params }: { params: Promise<{ locale: Local
   const moments = await payload.find({
     collection: 'moments',
     depth: 1,
-    limit: 10,
+    limit: 50,
     overrideAccess: false,
     locale,
     select: {
@@ -34,6 +34,10 @@ export default async function Page({ params }: { params: Promise<{ locale: Local
       images: true,
       content: true,
       publishedAt: true,
+    },
+    where: {
+      published: { equals: true },
+      _status: { equals: 'published' },
     },
   })
 
