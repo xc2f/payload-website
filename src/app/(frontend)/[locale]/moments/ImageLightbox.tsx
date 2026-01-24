@@ -84,6 +84,10 @@ export default function ImageLightbox({ slides, index, open, close }: ImageLight
         borderRadius: 2,
         padding: 0,
       }}
+      captions={{
+        showToggle: true,
+      }}
+      counter={{ container: { style: { top: 'unset', left: 'unset', bottom: 0, right: 0 } } }}
     />
   )
 }

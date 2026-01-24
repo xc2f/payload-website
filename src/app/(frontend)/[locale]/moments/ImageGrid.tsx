@@ -1,6 +1,7 @@
 'use client'
 import { useState, useMemo } from 'react'
 import { Media } from '@/components/Media'
+import { convertLexicalToPlaintext } from '@payloadcms/richtext-lexical/plaintext'
 
 import ImageLightbox from './ImageLightbox'
 
@@ -25,6 +26,8 @@ type SlideType = {
     src: string
     type: string
   }[]
+  title?: string
+  description?: string
 }
 
 const IMAGE_BASE_HEIGHT = 200
@@ -42,13 +45,17 @@ export default function ImageGrid({ images }: ImageGridProps) {
     }))
 
     const processedSliders: SlideType[] = processedPhotos.map((photo) => {
+      const alt = (photo.alt || '').trim()
+      const description = convertLexicalToPlaintext({ data: photo.caption }).trim()
       const slide: SlideType = {
         key: photo.key,
+        type: 'image',
         src: photo.url || '',
         width: photo.width ?? undefined,
         height: photo.height ?? undefined,
-        alt: photo.alt || '',
-        type: 'image',
+        alt,
+        title: alt,
+        description,
       }
       if (photo.mimeType?.startsWith('video/')) {
         return {

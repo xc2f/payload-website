@@ -169,7 +169,7 @@ export interface UserAuthOperations {
 export interface Media {
   id: number;
   watermark?: string | null;
-  alt?: string | null;
+  alt: string;
   caption?: {
     root: {
       type: string;
