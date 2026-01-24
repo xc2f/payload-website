@@ -83,6 +83,7 @@ export default function ImageLightbox({ slides, index, open, close }: ImageLight
         border: 2,
         borderRadius: 2,
         padding: 0,
+        hidden: slides.length < 3,
       }}
       captions={{
         showToggle: true,
